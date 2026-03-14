@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Agenda Karyawan • setel tanggal</title>
+    <title>Agenda Karyawan • filter bulan</title>
     <style>
         * {
             box-sizing: border-box;
@@ -198,7 +198,6 @@
             min-height: 90px;
         }
 
-        /* TANGGAL - dibuat seperti tombol klik setel */
         .tanggal-setel {
             width: 100%;
         }
@@ -212,11 +211,9 @@
             font-size: 0.95rem;
             color: #102b40;
             font-family: inherit;
-            /* membuat tampilan konsisten */
             display: block;
         }
         
-        /* styling biar kelihatan seperti tombol yang bisa diklik */
         .tanggal-setel input[type="date"]::-webkit-calendar-picker-indicator {
             background: transparent;
             padding: 8px;
@@ -226,10 +223,6 @@
             height: 24px;
         }
         
-        .tanggal-setel input[type="date"]:hover {
-            border-color: #8bb3da;
-        }
-
         .btn-simpan {
             width: 100%;
             background: #1a4b70;
@@ -250,115 +243,115 @@
             transform: scale(0.98);
         }
 
-        .history-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .filter-chip {
+        /* FILTER SECTION - dua baris filter */
+        .filter-section {
             background: white;
-            border-radius: 40px;
-            padding: 4px 8px 4px 16px;
+            border-radius: 24px;
+            padding: 12px 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px #c8d9ec;
+        }
+        
+        .filter-row {
             display: flex;
             align-items: center;
-            gap: 6px;
-            border: 1px solid #b9d0e9;
+            gap: 8px;
+            margin-bottom: 10px;
         }
-
-        .filter-chip select {
-            border: none;
-            background: transparent;
-            padding: 8px 0;
+        
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .filter-label {
             font-weight: 600;
-            color: #153e5c;
+            color: #1f405e;
             font-size: 0.85rem;
-            outline: none;
+            min-width: 45px;
         }
-
-        .btn-reset {
+        
+        .filter-select {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1.5px solid #c6d9f0;
+            border-radius: 30px;
+            background: white;
+            font-size: 0.85rem;
+            color: #102b40;
+            font-weight: 500;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f5e88' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+        }
+        
+        .btn-reset-filter {
             background: #dce9f5;
             border: none;
             border-radius: 40px;
-            padding: 8px 14px;
-            font-size: 0.75rem;
+            padding: 10px 16px;
             font-weight: 600;
             color: #1f3d59;
+            font-size: 0.8rem;
             cursor: pointer;
             border: 1px solid #acc6e3;
+            width: 100%;
+            margin-top: 8px;
         }
 
         .list-card {
             background: #f2f7ff;
             border-radius: 24px;
-            padding: 10px 8px;
-            max-height: 70vh;
+            padding: 8px 6px;
+            max-height: 58vh;
             overflow-y: auto;
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
         }
 
         .agenda-item {
             background: white;
-            border-radius: 20px;
-            padding: 14px 14px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 10px #c8d9ec;
+            border-radius: 18px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px #c8d9ec;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             border: 1px solid #eef5ff;
         }
 
-        .item-nama {
+        .item-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .badge {
+        .badge-nama {
             background: #d7e8ff;
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.75rem;
             color: #13416b;
+            white-space: nowrap;
         }
 
         .item-tanggal {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #33628b;
             background: #ecf3fc;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 30px;
             display: inline-block;
         }
 
         .item-keterangan {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #1a2e42;
-            padding: 2px 0;
+            padding: 2px 4px;
             word-break: break-word;
-        }
-
-        .delete-item {
-            background: none;
-            border: 1.5px solid #f0cfcf;
-            color: #a25656;
-            padding: 6px 12px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            align-self: flex-end;
-            cursor: pointer;
-            transition: 0.1s;
-        }
-
-        .delete-item:active {
-            background: #fce4e4;
-            border-color: #c87878;
         }
 
         .empty-message {
@@ -397,7 +390,6 @@
                     <label>👤 Nama (pilih / buat)</label>
                     <div class="select-wrap">
                         <select id="namaSelect">
-                            <!-- tidak ada opsi bawaan, kosong total -->
                         </select>
                     </div>
                     <div class="inline-row">
@@ -423,23 +415,40 @@
             <footer>data tersimpan di hp</footer>
         </div>
 
-        <!-- HALAMAN 2: RIWAYAT + FILTER -->
+        <!-- HALAMAN 2: RIWAYAT + FILTER NAMA & BULAN -->
         <div id="pageHistory" class="page">
-            <div class="history-header">
-                <div class="filter-chip">
-                    <span>🔽</span>
-                    <select id="filterNama">
+            <div class="filter-section">
+                <div class="filter-row">
+                    <span class="filter-label">Nama</span>
+                    <select id="filterNama" class="filter-select">
                         <option value="SEMUA">Semua karyawan</option>
-                        <!-- tidak ada opsi bawaan -->
                     </select>
                 </div>
-                <button class="btn-reset" id="resetFilterBtn">↻ reset filter</button>
+                <div class="filter-row">
+                    <span class="filter-label">Bulan</span>
+                    <select id="filterBulan" class="filter-select">
+                        <option value="SEMUA">Semua bulan</option>
+                        <option value="01">Januari</option>
+                        <option value="02">Februari</option>
+                        <option value="03">Maret</option>
+                        <option value="04">April</option>
+                        <option value="05">Mei</option>
+                        <option value="06">Juni</option>
+                        <option value="07">Juli</option>
+                        <option value="08">Agustus</option>
+                        <option value="09">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                </div>
+                <button class="btn-reset-filter" id="resetFilterBtn">↻ Reset filter</button>
             </div>
 
             <div class="list-card" id="riwayatContainer">
                 <div class="empty-message">👋 Belum ada agenda.<br>Tambahkan lewat form.</div>
             </div>
-            <footer style="margin-top: 12px;">tap item untuk hapus</footer>
+            <footer style="margin-top: 12px;">riwayat tanpa tombol hapus</footer>
         </div>
     </div>
 </div>
@@ -460,6 +469,7 @@
         const tanggalInput = document.getElementById('tanggalInput');
         const simpanBtn = document.getElementById('simpanBtn');
         const filterNama = document.getElementById('filterNama');
+        const filterBulan = document.getElementById('filterBulan');
         const resetFilterBtn = document.getElementById('resetFilterBtn');
         const riwayatContainer = document.getElementById('riwayatContainer');
 
@@ -499,7 +509,7 @@
                 });
             }
 
-            // filter dropdown
+            // filter dropdown nama
             filterNama.innerHTML = '<option value="SEMUA">Semua karyawan</option>';
             daftarNama.slice().sort().forEach(n => {
                 const opt = document.createElement('option');
@@ -517,51 +527,52 @@
             localStorage.setItem('agenda_data', JSON.stringify(agendaList));
         }
 
-        // ----- render riwayat (dengan filter) -----
+        // ----- render riwayat dengan filter nama dan bulan -----
         function renderRiwayat() {
-            const filterValue = filterNama.value;
+            const filterNamaValue = filterNama.value;
+            const filterBulanValue = filterBulan.value;
+            
             let tampil = agendaList;
-            if (filterValue !== 'SEMUA') {
-                tampil = agendaList.filter(item => item.nama === filterValue);
+            
+            // Filter berdasarkan nama
+            if (filterNamaValue !== 'SEMUA') {
+                tampil = tampil.filter(item => item.nama === filterNamaValue);
             }
+            
+            // Filter berdasarkan bulan
+            if (filterBulanValue !== 'SEMUA') {
+                tampil = tampil.filter(item => {
+                    // item.tanggal format YYYY-MM-DD
+                    const bulanItem = item.tanggal.substring(5, 7);
+                    return bulanItem === filterBulanValue;
+                });
+            }
+            
+            // Urutkan berdasarkan tanggal terbaru
             tampil.sort((a,b) => (a.tanggal < b.tanggal ? 1 : -1));
 
             if (tampil.length === 0) {
-                riwayatContainer.innerHTML = `<div class="empty-message">📭 Belum ada agenda.<br>Tambahkan lewat form.</div>`;
+                riwayatContainer.innerHTML = `<div class="empty-message">📭 Tidak ada agenda<br>dengan filter ini.</div>`;
                 return;
             }
 
             let html = '';
             tampil.forEach((item) => {
-                const globalIndex = agendaList.findIndex(g => 
-                    g.nama === item.nama && g.keterangan === item.keterangan && g.tanggal === item.tanggal
-                );
+                // Format tanggal Indonesia (opsional)
+                const tgl = item.tanggal.split('-');
+                const tglFormat = `${tgl[2]}/${tgl[1]}/${tgl[0]}`;
+                
                 html += `
                 <div class="agenda-item">
-                    <div class="item-nama">
-                        <span class="badge">${item.nama}</span>
-                        <span class="item-tanggal">${item.tanggal}</span>
+                    <div class="item-header">
+                        <span class="badge-nama">${item.nama}</span>
+                        <span class="item-tanggal">${tglFormat}</span>
                     </div>
                     <div class="item-keterangan">${item.keterangan}</div>
-                    <button class="delete-item" data-index="${globalIndex}">✕ hapus</button>
                 </div>
                 `;
             });
             riwayatContainer.innerHTML = html;
-
-            document.querySelectorAll('.delete-item').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const idx = this.getAttribute('data-index');
-                    if (idx && idx >= 0 && idx < agendaList.length) {
-                        agendaList.splice(idx, 1);
-                        simpanAgenda();
-                        renderRiwayat();
-                    } else {
-                        alert('Gagal menghapus');
-                    }
-                });
-            });
         }
 
         // ----- inisialisasi / sinkronisasi awal -----
@@ -629,12 +640,18 @@
             alert('Agenda tersimpan!');
         });
 
+        // ----- event filter ganda -----
         filterNama.addEventListener('change', function() {
+            renderRiwayat();
+        });
+
+        filterBulan.addEventListener('change', function() {
             renderRiwayat();
         });
 
         resetFilterBtn.addEventListener('click', function() {
             filterNama.value = 'SEMUA';
+            filterBulan.value = 'SEMUA';
             renderRiwayat();
         });
 
