@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Agenda Karyawan • ringkas</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            background: #eef2f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        .phone-frame {
+            width: 100%;
+            max-width: 400px;   /* sedikit lebih ramping agar benar2 seperti hp */
+            background: #f8fafd;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,10,30,0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border-radius: 0;
+        }
+
+        .screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 12px 16px 12px;  /* padding kiri/kanan dikurangi */
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #dbe4ee;
+        }
+
+        .app-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #153e5c;
+            letter-spacing: -0.2px;
+            line-height: 1.2;
+        }
+
+        .app-header span {
+            background: #cddeee;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1a3f5c;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            background: #e3ebf3;
+            padding: 5px;
+            border-radius: 50px;
+            margin-bottom: 18px;
+        }
+
+        .nav-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 40px;
+            color: #3a5a7a;
+            transition: 0.2s;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #153e5c;
+            box-shadow: 0 2px 8px rgba(44, 84, 128, 0.15);
+            font-weight: 600;
+        }
+
+        .page {
+            display: none;
+            animation: fade 0.2s ease;
+        }
+
+        .page.active-page {
+            display: block;
+        }
+
+        @keyframes fade { from {opacity:0.3;} to {opacity:1;} }
+
+        .form-container {
+            background: #ffffffd9;
+            backdrop-filter: blur(2px);
+            padding: 18px 14px;
+            border-radius: 28px;
+            box-shadow: 0 4px 14px #bacfdfb0;
+            border: 1px solid #ffffff;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            color: #1f405e;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .select-wrap {
+            position: relative;
+        }
+
+        .select-wrap select {
+            width: 100%;
+            padding: 14px 16px;
+            background: white;
+            border: 1.8px solid #c6d9f0;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            appearance: none;
+            color: #102b40;
+            font-weight: 500;
+        }
+
+        .select-wrap::after {
+            content: "▼";
+            font-size: 0.8rem;
+            color: #2f5e88;
+            position: absolute;
+            right: 18px;
+            top: 16px;
+            pointer-events: none;
+        }
+
+        /* baris tambah nama diperkecil */
+        .inline-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            align-items: center;
+        }
+
+        .inline-row input {
+            flex: 1;
+            padding: 10px 14px;         /* lebih kecil dari sebelumnya */
+            border: 1.8px solid #c6d9f0;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        .btn-small {
+            background: #d6e5f5;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 16px;          /* ukuran pas, tidak gemuk */
+            font-weight: 700;
+            color: #153e5c;
+            font-size: 0.85rem;
+            border: 1px solid #acc4df;
+            white-space: nowrap;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.8px solid #c6d9f0;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            background: white;
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.8px solid #c6d9f0;
+            border-radius: 40px;
+            background: white;
+            font-size: 0.95rem;
+        }
+
+        .btn-simpan {
+            width: 100%;
+            background: #1a4b70;
+            border: none;
+            border-radius: 60px;
+            padding: 16px 0;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 18px;
+            box-shadow: 0 4px 12px #abc0d4;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .btn-simpan:active {
+            background: #0f3a55;
+            transform: scale(0.98);
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .filter-chip {
+            background: white;
+            border-radius: 40px;
+            padding: 4px 8px 4px 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #b9d0e9;
+        }
+
+        .filter-chip select {
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            font-weight: 600;
+            color: #153e5c;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .btn-reset {
+            background: #dce9f5;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1f3d59;
+            cursor: pointer;
+            border: 1px solid #acc6e3;
+        }
+
+        .list-card {
+            background: #f2f7ff;
+            border-radius: 24px;
+            padding: 10px 8px;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .agenda-item {
+            background: white;
+            border-radius: 20px;
+            padding: 14px 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 10px #c8d9ec;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border: 1px solid #eef5ff;
+        }
+
+        .item-nama {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .badge {
+            background: #d7e8ff;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #13416b;
+        }
+
+        .item-tanggal {
+            font-size: 0.75rem;
+            color: #33628b;
+            background: #ecf3fc;
+            padding: 4px 10px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        .item-keterangan {
+            font-size: 0.95rem;
+            color: #1a2e42;
+            padding: 2px 0;
+            word-break: break-word;
+        }
+
+        .delete-item {
+            background: none;
+            border: 1.5px solid #f0cfcf;
+            color: #a25656;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            align-self: flex-end;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .delete-item:active {
+            background: #fce4e4;
+            border-color: #c87878;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #7592b2;
+            padding: 30px 0;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 12px;
+            color: #718daa;
+            font-size: 0.65rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="phone-frame">
+    <div class="screen">
+        <div class="app-header">
+            <h1>Pembukuan<br>Agenda Karyawan</h1>
+            <span>v.and 1.0</span>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" id="tabForm">➕ Form</button>
+            <button class="nav-tab" id="tabHistory">📋 Riwayat</button>
+        </div>
+
+        <!-- HALAMAN 1: FORM (tanpa nama contoh) -->
+        <div id="pageForm" class="page active-page">
+            <div class="form-container">
+                <div class="field">
+                    <label>👤 Nama (pilih / buat)</label>
+                    <div class="select-wrap">
+                        <select id="namaSelect">
+                            <!-- tidak ada opsi bawaan, kosong total -->
+                        </select>
+                    </div>
+                    <div class="inline-row">
+                        <input type="text" id="newNamaInput" placeholder="Nama karyawan">
+                        <button class="btn-small" id="tambahNamaBtn">Tambah</button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>📝 Keterangan</label>
+                    <textarea id="keteranganInput" placeholder="Tulis agenda, tugas..."></textarea>
+                </div>
+
+                <div class="field">
+                    <label>📅 Tanggal</label>
+                    <input type="date" id="tanggalInput" class="date-input">
+                </div>
+
+                <button class="btn-simpan" id="simpanBtn">✔ Simpan agenda</button>
+            </div>
+            <footer>data tersimpan di hp</footer>
+        </div>
+
+        <!-- HALAMAN 2: RIWAYAT + FILTER (tanpa nama contoh) -->
+        <div id="pageHistory" class="page">
+            <div class="history-header">
+                <div class="filter-chip">
+                    <span>🔽</span>
+                    <select id="filterNama">
+                        <option value="SEMUA">Semua karyawan</option>
+                        <!-- tidak ada opsi bawaan -->
+                    </select>
+                </div>
+                <button class="btn-reset" id="resetFilterBtn">↻ reset filter</button>
+            </div>
+
+            <div class="list-card" id="riwayatContainer">
+                <div class="empty-message">👋 Belum ada agenda.<br>Tambahkan lewat form.</div>
+            </div>
+            <footer style="margin-top: 12px;">tap item untuk hapus</footer>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ----------------------------------------------
+        // PENYIMPANAN LOKAL (HP) - TANPA DATA CONTOH
+        // ----------------------------------------------
+        let daftarNama = JSON.parse(localStorage.getItem('agenda_nama_list')) || [];
+        let agendaList = JSON.parse(localStorage.getItem('agenda_data')) || [];
+
+        // elemen2
+        const namaSelect = document.getElementById('namaSelect');
+        const newNamaInput = document.getElementById('newNamaInput');
+        const tambahNamaBtn = document.getElementById('tambahNamaBtn');
+        const keteranganInput = document.getElementById('keteranganInput');
+        const tanggalInput = document.getElementById('tanggalInput');
+        const simpanBtn = document.getElementById('simpanBtn');
+        const filterNama = document.getElementById('filterNama');
+        const resetFilterBtn = document.getElementById('resetFilterBtn');
+        const riwayatContainer = document.getElementById('riwayatContainer');
+
+        // tab navigasi
+        const tabForm = document.getElementById('tabForm');
+        const tabHistory = document.getElementById('tabHistory');
+        const pageForm = document.getElementById('pageForm');
+        const pageHistory = document.getElementById('pageHistory');
+
+        // set default tanggal hari ini
+        function setTodayDate() {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            tanggalInput.value = `${year}-${month}-${day}`;
+        }
+        setTodayDate();
+
+        // ----- update semua dropdown nama (form + filter) -----
+        function refreshNamaDropdowns() {
+            // select form
+            namaSelect.innerHTML = '';
+            if (daftarNama.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = '-- belum ada nama, buat dulu --';
+                opt.disabled = true;
+                opt.selected = true;
+                namaSelect.appendChild(opt);
+            } else {
+                daftarNama.forEach(n => {
+                    const opt = document.createElement('option');
+                    opt.value = n;
+                    opt.textContent = n;
+                    namaSelect.appendChild(opt);
+                });
+            }
+
+            // filter dropdown
+            filterNama.innerHTML = '<option value="SEMUA">Semua karyawan</option>';
+            daftarNama.slice().sort().forEach(n => {
+                const opt = document.createElement('option');
+                opt.value = n;
+                opt.textContent = n;
+                filterNama.appendChild(opt);
+            });
+        }
+
+        function simpanDaftarNama() {
+            localStorage.setItem('agenda_nama_list', JSON.stringify(daftarNama));
+        }
+
+        function simpanAgenda() {
+            localStorage.setItem('agenda_data', JSON.stringify(agendaList));
+        }
+
+        // ----- render riwayat (dengan filter) -----
+        function renderRiwayat() {
+            const filterValue = filterNama.value;
+            let tampil = agendaList;
+            if (filterValue !== 'SEMUA') {
+                tampil = agendaList.filter(item => item.nama === filterValue);
+            }
+            tampil.sort((a,b) => (a.tanggal < b.tanggal ? 1 : -1));
+
+            if (tampil.length === 0) {
+                riwayatContainer.innerHTML = `<div class="empty-message">📭 Belum ada agenda.<br>Tambahkan lewat form.</div>`;
+                return;
+            }
+
+            let html = '';
+            tampil.forEach((item) => {
+                const globalIndex = agendaList.findIndex(g => 
+                    g.nama === item.nama && g.keterangan === item.keterangan && g.tanggal === item.tanggal
+                );
+                html += `
+                <div class="agenda-item">
+                    <div class="item-nama">
+                        <span class="badge">${item.nama}</span>
+                        <span class="item-tanggal">${item.tanggal}</span>
+                    </div>
+                    <div class="item-keterangan">${item.keterangan}</div>
+                    <button class="delete-item" data-index="${globalIndex}">✕ hapus</button>
+                </div>
+                `;
+            });
+            riwayatContainer.innerHTML = html;
+
+            document.querySelectorAll('.delete-item').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const idx = this.getAttribute('data-index');
+                    if (idx && idx >= 0 && idx < agendaList.length) {
+                        agendaList.splice(idx, 1);
+                        simpanAgenda();
+                        renderRiwayat();
+                    } else {
+                        alert('Gagal menghapus');
+                    }
+                });
+            });
+        }
+
+        // ----- inisialisasi / sinkronisasi awal -----
+        function init() {
+            agendaList.forEach(item => {
+                if (!daftarNama.includes(item.nama)) {
+                    daftarNama.push(item.nama);
+                }
+            });
+            simpanDaftarNama();
+            refreshNamaDropdowns();
+            renderRiwayat();
+        }
+        init();
+
+        // ----- tambah nama baru (tombol sudah kecil) -----
+        tambahNamaBtn.addEventListener('click', function() {
+            const baru = newNamaInput.value.trim();
+            if (baru === '') {
+                alert('Isi nama karyawan.');
+                return;
+            }
+            if (!daftarNama.includes(baru)) {
+                daftarNama.push(baru);
+                simpanDaftarNama();
+                refreshNamaDropdowns();
+                namaSelect.value = baru;
+                newNamaInput.value = '';
+            } else {
+                alert('Nama sudah ada.');
+                newNamaInput.value = '';
+            }
+        });
+
+        // ----- simpan agenda baru -----
+        simpanBtn.addEventListener('click', function() {
+            const nama = namaSelect.value;
+            if (!nama || nama === '') {
+                alert('Pilih atau buat nama terlebih dahulu.');
+                return;
+            }
+            const keterangan = keteranganInput.value.trim();
+            if (!keterangan) {
+                alert('Keterangan tidak boleh kosong.');
+                return;
+            }
+            let tanggal = tanggalInput.value;
+            if (!tanggal) {
+                setTodayDate();
+                tanggal = tanggalInput.value;
+            }
+
+            agendaList.push({ nama, keterangan, tanggal });
+            simpanAgenda();
+
+            keteranganInput.value = '';
+            setTodayDate();
+
+            if (pageHistory.classList.contains('active-page')) {
+                renderRiwayat();
+            } else {
+                renderRiwayat();
+            }
+
+            alert('Agenda tersimpan!');
+        });
+
+        filterNama.addEventListener('change', function() {
+            renderRiwayat();
+        });
+
+        resetFilterBtn.addEventListener('click', function() {
+            filterNama.value = 'SEMUA';
+            renderRiwayat();
+        });
+
+        tabForm.addEventListener('click', function() {
+            tabForm.classList.add('active');
+            tabHistory.classList.remove('active');
+            pageForm.classList.add('active-page');
+            pageHistory.classList.remove('active-page');
+        });
+
+        tabHistory.addEventListener('click', function() {
+            tabHistory.classList.add('active');
+            tabForm.classList.remove('active');
+            pageHistory.classList.add('active-page');
+            pageForm.classList.remove('active-page');
+            renderRiwayat();
+        });
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'agenda_data') {
+                agendaList = JSON.parse(e.newValue) || [];
+                init();
+            }
+            if (e.key === 'agenda_nama_list') {
+                daftarNama = JSON.parse(e.newValue) || [];
+                refreshNamaDropdowns();
+            }
+        });
+    })();
+</script>
+</body>
+</html>
