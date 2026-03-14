@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Agenda Karyawan • ringkas</title>
+    <title>Agenda Karyawan • setel tanggal</title>
     <style>
         * {
             box-sizing: border-box;
@@ -24,7 +24,7 @@
 
         .phone-frame {
             width: 100%;
-            max-width: 400px;   /* sedikit lebih ramping agar benar2 seperti hp */
+            max-width: 400px;
             background: #f8fafd;
             min-height: 100vh;
             box-shadow: 0 0 30px rgba(0,10,30,0.1);
@@ -38,7 +38,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 16px 12px 16px 12px;  /* padding kiri/kanan dikurangi */
+            padding: 16px 12px 16px 12px;
         }
 
         .app-header {
@@ -157,7 +157,6 @@
             pointer-events: none;
         }
 
-        /* baris tambah nama diperkecil */
         .inline-row {
             display: flex;
             gap: 6px;
@@ -167,7 +166,7 @@
 
         .inline-row input {
             flex: 1;
-            padding: 10px 14px;         /* lebih kecil dari sebelumnya */
+            padding: 10px 14px;
             border: 1.8px solid #c6d9f0;
             border-radius: 40px;
             font-size: 0.9rem;
@@ -178,7 +177,7 @@
             background: #d6e5f5;
             border: none;
             border-radius: 40px;
-            padding: 10px 16px;          /* ukuran pas, tidak gemuk */
+            padding: 10px 16px;
             font-weight: 700;
             color: #153e5c;
             font-size: 0.85rem;
@@ -199,13 +198,36 @@
             min-height: 90px;
         }
 
-        .date-input {
+        /* TANGGAL - dibuat seperti tombol klik setel */
+        .tanggal-setel {
+            width: 100%;
+        }
+        
+        .tanggal-setel input[type="date"] {
             width: 100%;
             padding: 14px 16px;
             border: 1.8px solid #c6d9f0;
             border-radius: 40px;
             background: white;
             font-size: 0.95rem;
+            color: #102b40;
+            font-family: inherit;
+            /* membuat tampilan konsisten */
+            display: block;
+        }
+        
+        /* styling biar kelihatan seperti tombol yang bisa diklik */
+        .tanggal-setel input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            padding: 8px;
+            cursor: pointer;
+            opacity: 0.6;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .tanggal-setel input[type="date"]:hover {
+            border-color: #8bb3da;
         }
 
         .btn-simpan {
@@ -368,7 +390,7 @@
             <button class="nav-tab" id="tabHistory">📋 Riwayat</button>
         </div>
 
-        <!-- HALAMAN 1: FORM (tanpa nama contoh) -->
+        <!-- HALAMAN 1: FORM -->
         <div id="pageForm" class="page active-page">
             <div class="form-container">
                 <div class="field">
@@ -390,8 +412,10 @@
                 </div>
 
                 <div class="field">
-                    <label>📅 Tanggal</label>
-                    <input type="date" id="tanggalInput" class="date-input">
+                    <label>📅 Tanggal (klik untuk setel)</label>
+                    <div class="tanggal-setel">
+                        <input type="date" id="tanggalInput" class="date-input">
+                    </div>
                 </div>
 
                 <button class="btn-simpan" id="simpanBtn">✔ Simpan agenda</button>
@@ -399,7 +423,7 @@
             <footer>data tersimpan di hp</footer>
         </div>
 
-        <!-- HALAMAN 2: RIWAYAT + FILTER (tanpa nama contoh) -->
+        <!-- HALAMAN 2: RIWAYAT + FILTER -->
         <div id="pageHistory" class="page">
             <div class="history-header">
                 <div class="filter-chip">
@@ -553,7 +577,7 @@
         }
         init();
 
-        // ----- tambah nama baru (tombol sudah kecil) -----
+        // ----- tambah nama baru -----
         tambahNamaBtn.addEventListener('click', function() {
             const baru = newNamaInput.value.trim();
             if (baru === '') {
