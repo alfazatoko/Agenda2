@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Agenda Karyawan • filter bulan</title>
+    <title>Agenda & Gaji Karyawan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -368,22 +369,84 @@
             font-size: 0.65rem;
             text-align: center;
         }
+
+        /* Style untuk form gaji (halaman 3) */
+        .input-box {
+            margin-bottom: 12px;
+        }
+
+        .input-box label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            color: #1f405e;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.8px solid #c6d9f0;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            background: white;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .row .input-box {
+            flex: 1;
+        }
+
+        .hasil {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 24px;
+            background: #f2f7ff;
+        }
+
+        .hasil p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .total {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 20px;
+            background: #1a4b70;
+            color: white;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .icon {
+            margin-right: 6px;
+            color: #1f405e;
+        }
     </style>
 </head>
 <body>
 <div class="phone-frame">
     <div class="screen">
         <div class="app-header">
-            <h1>Pembukuan<br>Agenda Karyawan</h1>
-            <span>v.and 1.0</span>
+            <h1>Pembukuan<br>Karyawan</h1>
+            <span>v.and 2.0</span>
         </div>
 
         <div class="nav-tabs">
             <button class="nav-tab active" id="tabForm">➕ Form</button>
             <button class="nav-tab" id="tabHistory">📋 Riwayat</button>
+            <button class="nav-tab" id="tabGaji">💰 Gaji</button>
         </div>
 
-        <!-- HALAMAN 1: FORM -->
+        <!-- HALAMAN 1: FORM AGENDA -->
         <div id="pageForm" class="page active-page">
             <div class="form-container">
                 <div class="field">
@@ -450,6 +513,60 @@
             </div>
             <footer style="margin-top: 12px;">riwayat tanpa tombol hapus</footer>
         </div>
+
+        <!-- HALAMAN 3: FORM HITUNG GAJI -->
+        <div id="pageGaji" class="page">
+            <div class="form-container">
+                <h3 style="margin-bottom: 15px; color: #153e5c;"><i class="fa-solid fa-money-bill-wave"></i> Hitung Gaji</h3>
+
+                <div class="field">
+                    <label><i class="fa-solid fa-user icon"></i> Pilih Karyawan</label>
+                    <div class="select-wrap">
+                        <select id="gajiNamaSelect">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-box">
+                        <label><i class="fa-solid fa-wallet icon"></i>Gaji / Hari</label>
+                        <input type="number" id="gajiPerHari" value="100000">
+                    </div>
+                    <div class="input-box">
+                        <label><i class="fa-solid fa-gift icon"></i>Bonus</label>
+                        <input type="number" id="bonusGaji" value="0">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-box">
+                        <label><i class="fa-solid fa-calendar icon"></i>Hari Kerja</label>
+                        <input type="number" id="hariKerja" value="0">
+                    </div>
+                    <div class="input-box">
+                        <label><i class="fa-solid fa-user-clock icon"></i>Izin</label>
+                        <input type="number" id="izinGaji" value="0">
+                    </div>
+                </div>
+
+                <button class="btn-simpan" onclick="hitungGaji()">
+                    <i class="fa-solid fa-calculator"></i> Hitung Gaji
+                </button>
+
+                <div class="hasil">
+                    <h4 style="color: #1f405e;">Hasil Perhitungan</h4>
+                    <p>Nama : <span id="hNama">-</span></p>
+                    <p>Gaji Pokok : Rp <span id="hPokok">0</span></p>
+                    <p>Bonus : Rp <span id="hBonus">0</span></p>
+                    <p>Izin (Potongan) : Rp <span id="hIzin">0</span></p>
+                    
+                    <div class="total">
+                        TOTAL DITERIMA<br>
+                        Rp <span id="totalGaji">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -473,11 +590,20 @@
         const resetFilterBtn = document.getElementById('resetFilterBtn');
         const riwayatContainer = document.getElementById('riwayatContainer');
 
+        // elemen gaji
+        const gajiNamaSelect = document.getElementById('gajiNamaSelect');
+        const gajiPerHari = document.getElementById('gajiPerHari');
+        const bonusGaji = document.getElementById('bonusGaji');
+        const hariKerja = document.getElementById('hariKerja');
+        const izinGaji = document.getElementById('izinGaji');
+
         // tab navigasi
         const tabForm = document.getElementById('tabForm');
         const tabHistory = document.getElementById('tabHistory');
+        const tabGaji = document.getElementById('tabGaji');
         const pageForm = document.getElementById('pageForm');
         const pageHistory = document.getElementById('pageHistory');
+        const pageGaji = document.getElementById('pageGaji');
 
         // set default tanggal hari ini
         function setTodayDate() {
@@ -489,7 +615,7 @@
         }
         setTodayDate();
 
-        // ----- update semua dropdown nama (form + filter) -----
+        // ----- update semua dropdown nama (form + filter + gaji) -----
         function refreshNamaDropdowns() {
             // select form
             namaSelect.innerHTML = '';
@@ -517,6 +643,24 @@
                 opt.textContent = n;
                 filterNama.appendChild(opt);
             });
+
+            // dropdown gaji
+            gajiNamaSelect.innerHTML = '';
+            if (daftarNama.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = '-- belum ada nama --';
+                opt.disabled = true;
+                opt.selected = true;
+                gajiNamaSelect.appendChild(opt);
+            } else {
+                daftarNama.forEach(n => {
+                    const opt = document.createElement('option');
+                    opt.value = n;
+                    opt.textContent = n;
+                    gajiNamaSelect.appendChild(opt);
+                });
+            }
         }
 
         function simpanDaftarNama() {
@@ -573,6 +717,34 @@
                 `;
             });
             riwayatContainer.innerHTML = html;
+        }
+
+        // ----- fungsi hitung gaji -----
+        window.hitungGaji = function() {
+            let nama = gajiNamaSelect.value;
+            if (!nama || nama === '') {
+                alert('Pilih nama karyawan terlebih dahulu.');
+                return;
+            }
+            
+            let gaji = Number(gajiPerHari.value) || 0;
+            let bonus = Number(bonusGaji.value) || 0;
+            let hari = Number(hariKerja.value) || 0;
+            let izin = Number(izinGaji.value) || 0;
+
+            let gajiPokok = gaji * hari;
+            let potongan = gaji * izin;
+            let total = gajiPokok + bonus - potongan;
+
+            document.getElementById("hNama").innerText = nama;
+            document.getElementById("hPokok").innerText = rupiah(gajiPokok);
+            document.getElementById("hBonus").innerText = rupiah(bonus);
+            document.getElementById("hIzin").innerText = rupiah(potongan);
+            document.getElementById("totalGaji").innerText = rupiah(total);
+        }
+
+        function rupiah(x) {
+            return x.toLocaleString("id-ID");
         }
 
         // ----- inisialisasi / sinkronisasi awal -----
@@ -655,19 +827,33 @@
             renderRiwayat();
         });
 
+        // tab navigasi
         tabForm.addEventListener('click', function() {
             tabForm.classList.add('active');
             tabHistory.classList.remove('active');
+            tabGaji.classList.remove('active');
             pageForm.classList.add('active-page');
             pageHistory.classList.remove('active-page');
+            pageGaji.classList.remove('active-page');
         });
 
         tabHistory.addEventListener('click', function() {
             tabHistory.classList.add('active');
             tabForm.classList.remove('active');
+            tabGaji.classList.remove('active');
             pageHistory.classList.add('active-page');
             pageForm.classList.remove('active-page');
+            pageGaji.classList.remove('active-page');
             renderRiwayat();
+        });
+
+        tabGaji.addEventListener('click', function() {
+            tabGaji.classList.add('active');
+            tabForm.classList.remove('active');
+            tabHistory.classList.remove('active');
+            pageGaji.classList.add('active-page');
+            pageForm.classList.remove('active-page');
+            pageHistory.classList.remove('active-page');
         });
 
         window.addEventListener('storage', function(e) {
